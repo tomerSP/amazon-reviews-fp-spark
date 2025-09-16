@@ -4,11 +4,14 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 /**
  * Main application entry point.
- * This object orchestrates the data pipeline by separating I/O
- * from the core functional logic.
+ *
+ * This object orchestrates the data pipeline by separating I/O operations from
+ * the core functional logic, as required by the project. It handles data loading,
+ * invoking the functional transformations, and saving the final results.
  */
 object Main {
     def main(args: Array[String]): Unit = {
+        // Initializes the Spark session.
         val spark = SparkSession.builder()
           .appName("Amazon Reviews Functional Analysis")
           .master("local[*]")
@@ -23,6 +26,8 @@ object Main {
 
         // I/O: Load data using the preprocessor
         // ============== PATTERN MATCHING WITH CASE CLASSES ==============
+        // This section uses pattern matching on the `Option` returned by `loadReviews`
+        // to handle both success and failure cases gracefully.
         val rawReviews: Dataset[Review] = preprocessor.loadReviews(inputPath) match {
             case Some(ds: Dataset[Review]) => ds
             case None =>
@@ -43,6 +48,7 @@ object Main {
         }
 
         // Pure Logic: Process the data using the analysis object
+        // This is a clear separation of concerns, as the I/O is done outside the functional core.
         val processedReviews = AmazonReviewsAnalysis.processReviews(spark, rawReviews)
         processedReviews.cache()
 
@@ -60,12 +66,17 @@ object Main {
         // Demonstrate function composition with custom combinators for final summary
         import com.reviews.analysis.AmazonReviewsAnalysis.ReviewFilters._
 
+        // This is a pure function that takes a review and marks it as high quality.
         val markAsHighQuality: ProcessedReview => ProcessedReview =
             review => review.copy(isHighQuality = true)
 
-        //Partial function application
+        // Partial function application: `filterByMinRating` and `filterByMinLength` are
+        // partially applied. `and` is a combinator that combines two predicates
+        // to create a more complex one.
         val summaryPredicate = and(filterByMinRating(4.0), filterByMinLength(100))
 
+        // Function composition: `whenThen` is a custom combinator that composes a predicate
+        // with a transformation.
         val summaryPipeline = whenThen(summaryPredicate)(markAsHighQuality)
 
         val highQualityReviews = processedReviews
