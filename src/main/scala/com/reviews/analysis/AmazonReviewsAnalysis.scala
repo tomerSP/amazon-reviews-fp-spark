@@ -38,20 +38,31 @@ object AmazonReviewsAnalysis {
 
     // ============== CUSTOM COMBINATOR ==============
 
-    /** Custom combinator that applies a transformation only if a predicate is satisfied. */
-    def whenThen[A](predicate: A => Boolean)(transform: A => A): A => A =
-        (input: A) => if (predicate(input)) transform(input) else input
+    /** Encapsulates combinator-based review filters */
+    object ReviewFilters {
 
-    // ============== CURRIED FUNCTION ==============
+        // Type alias for clarity
+        private type ReviewPredicate = ProcessedReview => Boolean
 
-    /** Curried function for filtering reviews by minimum rating. */
-    def filterByMinRating(minRating: Double)(review: ProcessedReview): Boolean =
-        review.rating >= minRating
+        /** Combinator to combine predicates with logical AND */
+        def and(pred1: ReviewPredicate, pred2: ReviewPredicate): ReviewPredicate =
+            review => pred1(review) && pred2(review)
 
+        // ============== CURRIED FUNCTIONS ==============
 
-    /** Curried function for filtering by review length. */
-    def filterByMinLength(minLength: Int)(review: ProcessedReview): Boolean =
-        review.reviewLength >= minLength
+        /** Custom combinator: applies a transformation only if the predicate is true */
+        def whenThen[A](predicate: A => Boolean)(transform: A => A): A => A =
+            (input: A) => if (predicate(input)) transform(input) else input
+
+        /** Predicate: minimum rating */
+        def filterByMinRating(minRating: Double): ReviewPredicate =
+            review => review.rating >= minRating
+
+        /** Predicate: minimum review length */
+        def filterByMinLength(minLength: Int): ReviewPredicate =
+            review => review.reviewLength >= minLength
+    }
+
 
     // ============== CLOSURES IN SPARK TRANSFORMATIONS ==============
 

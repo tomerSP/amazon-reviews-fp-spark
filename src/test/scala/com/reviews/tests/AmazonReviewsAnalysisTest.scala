@@ -49,7 +49,7 @@ class AmazonReviewsAnalysisTest extends AnyFunSuite {
     }
 
     // -------------- CUSTOM COMBINATOR --------------
-
+    import com.reviews.analysis.AmazonReviewsAnalysis.ReviewFilters._
     // whenThen
     test("whenThen should apply the 'then' function if the 'when' predicate is true") {
         val isEven: Int => Boolean = _ % 2 == 0
@@ -71,7 +71,7 @@ class AmazonReviewsAnalysisTest extends AnyFunSuite {
         // Define a minimum rating threshold.
         val minRating = 4.0
         // Create an instance of the curried function.
-        val filter = filterByMinRating(minRating)_
+        val filter = filterByMinRating(minRating)
 
         // Create test data.
         val reviewAboveMin = ProcessedReview("id1", "prod1", 5.0, 10, 20, "text", 2022)
@@ -90,7 +90,7 @@ class AmazonReviewsAnalysisTest extends AnyFunSuite {
         // Define a minimum review length threshold.
         val minLength = 10
         // Create an instance of the curried function.
-        val filter = filterByMinLength(minLength)_
+        val filter = filterByMinLength(minLength)
 
         // Create test data.
         val reviewLongEnough = ProcessedReview("id1", "prod1", 5.0, 10, 20, "This is a long review text.", 2022)
@@ -329,11 +329,11 @@ class AmazonReviewsAnalysisTest extends AnyFunSuite {
             reviewerID -> (productID, avgRating, reviewCount)
         }.toMap
 
-        val byUser = enriched.toMap
+        val byUser = enriched
 
-        assert(byUser("u1") == ("p1", 3.0, 2L))
-        assert(byUser("u2") == ("p1", 3.0, 2L))
-        assert(byUser("u3") == ("p2", 5.0, 1L))
+        assert(enriched("u1") == ("p1", 3.0, 2L))
+        assert(enriched("u2") == ("p1", 3.0, 2L))
+        assert(enriched("u3") == ("p2", 5.0, 1L))
     }
 
     test("enrichReviews should drop reviews without matching product stats") {

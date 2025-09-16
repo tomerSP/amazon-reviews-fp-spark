@@ -58,13 +58,15 @@ object Main {
         reviewerProfiles.toDF().write.mode("overwrite").json(s"$outputPath/reviewer_profiles")
 
         // Demonstrate function composition with custom combinators for final summary
+        import com.reviews.analysis.AmazonReviewsAnalysis.ReviewFilters._
+
         val markAsHighQuality: ProcessedReview => ProcessedReview =
-            (review: ProcessedReview) => review.copy(isHighQuality = true)
+            review => review.copy(isHighQuality = true)
 
-        val summaryConditions: ProcessedReview => Boolean =
-            review => AmazonReviewsAnalysis.filterByMinRating(4.0)(review) && AmazonReviewsAnalysis.filterByMinLength(100)(review)
+        //Partial function application
+        val summaryPredicate = and(filterByMinRating(4.0), filterByMinLength(100))
 
-        val summaryPipeline = AmazonReviewsAnalysis.whenThen(summaryConditions)(markAsHighQuality)
+        val summaryPipeline = whenThen(summaryPredicate)(markAsHighQuality)
 
         val highQualityReviews = processedReviews
           .map(summaryPipeline)
