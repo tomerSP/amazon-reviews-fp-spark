@@ -1,0 +1,26 @@
+Functional Core
+[X] Implement all data transformations as pure functions.
+[X] Use immutable data structures (e.g., case classes, List, Map).
+[X] Use currying or partial functions.
+[X] Demonstrate function composition.
+
+
+Apache Spark Usage
+[X] Use either the RDD, DataFrame, or DataSet API.
+[X] Include at least four different Spark operations (e.g., <map>, <filter>, reduceByKey, <groupBy>, <join>).
+[X] Load data from an external source.
+[X] Save the results to a file.
+
+
+Advanced Functional Programming
+[X] Include and document at least three of the following techniques:
+	[X] A custom combinator.
+	[X] Use of closures in Spark transformations.
+	[ ] A tail-recursive function for computation.
+	[X] Pattern matching with case classes.
+	[X] Functional error handling.
+
+Documentation & Testing
+[ ] Add inline comments and ScalaDoc to the code.
+[X] Use ScalaTest for unit testing.
+[X] Clearly separate pure logic from I/O operations.
