@@ -17,10 +17,10 @@ Advanced Functional Programming
 	[X] A custom combinator.
 	[X] Use of closures in Spark transformations.
 	[ ] A tail-recursive function for computation.
-	[X] Pattern matching with case classes.
+	[ ] Pattern matching with case classes.
 	[X] Functional error handling.
 
 Documentation & Testing
-[ ] Add inline comments and ScalaDoc to the code.
+[X] Add inline comments and ScalaDoc to the code.
 [X] Use ScalaTest for unit testing.
 [X] Clearly separate pure logic from I/O operations.

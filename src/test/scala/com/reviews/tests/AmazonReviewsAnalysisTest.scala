@@ -329,8 +329,6 @@ class AmazonReviewsAnalysisTest extends AnyFunSuite {
             reviewerID -> (productID, avgRating, reviewCount)
         }.toMap
 
-        val byUser = enriched
-
         assert(enriched("u1") == ("p1", 3.0, 2L))
         assert(enriched("u2") == ("p1", 3.0, 2L))
         assert(enriched("u3") == ("p2", 5.0, 1L))
